@@ -5,6 +5,7 @@ using VehicleLoanSystem.Models;
 using Scrypt;
 using Microsoft.AspNetCore.Http;
 using VehicleLoanSystem.Helpers;
+using VehicleLoanSystem.Data;
 
 
 
@@ -12,9 +13,9 @@ namespace VehicleLoanSystem.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly LoanManagementContext _context;
+        private readonly VehicleLoanSystemContext _context;
 
-        public LoginController(LoanManagementContext context)
+        public LoginController(VehicleLoanSystemContext  context)
         {
             _context = context;
         }

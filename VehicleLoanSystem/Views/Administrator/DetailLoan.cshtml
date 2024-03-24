@@ -22,17 +22,17 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastName)
         </dd>
-        <dt class = "col-sm-2">
+        @* <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.MiddleName)
-        </dt>
-        <dd class = "col-sm-10">
+        </dt> *@
+        @* <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.MiddleName)
-        </dd>
+        </dd> *@
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Sex)
+            @Html.DisplayNameFor(model => model.Gender)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sex)
+            @Html.DisplayFor(model => model.Gender)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
@@ -47,34 +47,34 @@
             @Html.DisplayFor(model => model.Phone)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.loanPlanId)
+            @Html.DisplayNameFor(model => model.LoanPlanId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.loanPlanId)
+            @Html.DisplayFor(model => model.LoanPlanId)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Salary)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Salary) ETB
+            @Html.DisplayFor(model => model.Salary) INR
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.loanTypeId)
+            @Html.DisplayNameFor(model => model.LoanTypeId)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.loanTypeId)
+            @Html.DisplayFor(model => model.LoanTypeId)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.loanPurpose)
+            @Html.DisplayNameFor(model => model.LoanPurpose)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.loanPurpose)
+            @Html.DisplayFor(model => model.LoanPurpose)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.loanAmount)
+            @Html.DisplayNameFor(model => model.LoanAmount)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.loanAmount) ETB
+            @Html.DisplayFor(model => model.LoanAmount) INR
         </dd>
         <dt class = "col-sm-2">
             Loan Status
@@ -83,28 +83,28 @@
             @Html.DisplayFor(model => model.LoanGrant)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.loanDate)
+            @Html.DisplayNameFor(model => model.LoanDate)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.loanDate)
+            @Html.DisplayFor(model => model.LoanDate)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TotalPayableAmount)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TotalPayableAmount) ETB
+            @Html.DisplayFor(model => model.TotalPayableAmount) INR
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.MonthlyPayableAmount)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MonthlyPayableAmount) ETB 
+            @Html.DisplayFor(model => model.MonthlyPayableAmount) INR 
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.MonthlyPenalty)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MonthlyPenalty) ETB
+            @Html.DisplayFor(model => model.MonthlyPenalty) INR
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.RejectionReason)

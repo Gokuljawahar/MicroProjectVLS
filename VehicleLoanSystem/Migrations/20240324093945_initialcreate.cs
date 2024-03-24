@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace VehicleLoanSystem.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class initialcreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -34,7 +34,23 @@ namespace VehicleLoanSystem.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Loan",
+                name: "LoanPlans",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Month = table.Column<int>(type: "int", nullable: false),
+                    Interest = table.Column<double>(type: "double", nullable: false),
+                    MonthlyOverDuePenalty = table.Column<double>(type: "double", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LoanPlans", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Loans",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -43,49 +59,31 @@ namespace VehicleLoanSystem.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastName = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    MiddleName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Sex = table.Column<string>(type: "longtext", nullable: false)
+                    Gender = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Email = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Phone = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    loanPlanId = table.Column<int>(type: "int", nullable: false),
-                    Salary = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    loanTypeId = table.Column<int>(type: "int", nullable: false),
-                    loanPurpose = table.Column<string>(type: "longtext", nullable: false)
+                    LoanPlanId = table.Column<int>(type: "int", nullable: false),
+                    Salary = table.Column<double>(type: "double", nullable: false),
+                    LoanTypeId = table.Column<int>(type: "int", nullable: false),
+                    LoanPurpose = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    loanAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    LoanGrant = table.Column<string>(type: "longtext", nullable: false)
+                    LoanAmount = table.Column<double>(type: "double", nullable: false),
+                    LoanGrant = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    loanDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    TotalPayableAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    MonthlyPayableAmount = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    MonthlyPenalty = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    RejectionReason = table.Column<string>(type: "longtext", nullable: false)
+                    LoanDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    TotalPayableAmount = table.Column<double>(type: "double", nullable: false),
+                    MonthlyPayableAmount = table.Column<double>(type: "double", nullable: false),
+                    MonthlyPenalty = table.Column<double>(type: "double", nullable: false),
+                    RejectionReason = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Loan", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "LoanPlans",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Month = table.Column<int>(type: "int", nullable: false),
-                    Interest = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    MonthlyOverDuePenalty = table.Column<decimal>(type: "decimal(65,30)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LoanPlans", x => x.Id);
+                    table.PrimaryKey("PK_Loans", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -119,7 +117,7 @@ namespace VehicleLoanSystem.Migrations
                     RemainingMonthPayment = table.Column<double>(type: "double", nullable: false),
                     PenaltyPaymentAmount = table.Column<double>(type: "double", nullable: false),
                     NextPaymentDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    LoanStatus = table.Column<string>(type: "longtext", nullable: false)
+                    LoanStatus = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LoanCovered = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
@@ -138,10 +136,10 @@ namespace VehicleLoanSystem.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
-                name: "Loan");
+                name: "LoanPlans");
 
             migrationBuilder.DropTable(
-                name: "LoanPlans");
+                name: "Loans");
 
             migrationBuilder.DropTable(
                 name: "LoanTypes");

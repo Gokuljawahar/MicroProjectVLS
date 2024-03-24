@@ -41,7 +41,7 @@
                     <div class="small-box bg-danger p-4 shadow p-3 mb-5 rounded">
                         <div class="inner">
                             @if(!TempData["monthlyPayment"].Equals(0)){
-                                   <h3>@TempData["monthlyPayment"] ETB</h3>
+                                   <h3>@TempData["monthlyPayment"] INR</h3>
                             }else{
                                <h4>There is No Payment</h4>
                                
@@ -69,7 +69,7 @@
                                 @if(Math.Round(Convert.ToDouble(TempData["totalRemainingLoan"].ToString()),2) <0){
                                     <h3>Loan Fully Paid</h3>
                                     }else{
-                                        <h3>@Math.Round(Convert.ToDouble(TempData["totalRemainingLoan"].ToString()),2) ETB</h3>
+                                        <h3>@Math.Round(Convert.ToDouble(TempData["totalRemainingLoan"].ToString()),2) INR</h3>
                                     }
                             }
                            

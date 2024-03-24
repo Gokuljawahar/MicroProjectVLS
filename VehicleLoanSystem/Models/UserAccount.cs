@@ -15,10 +15,10 @@ namespace VehicleLoanSystem.Models
         public int Id { get; set; }
         [Required]
         [DisplayName("User Name")]
-        public string User_Name { get; set; }
+        public string? User_Name { get; set; }
         [Required]
         [DisplayName("Password")]
-        public string User_Password { get; set; }
+        public string? User_Password { get; set; }
         
         [DefaultValue(false)]
         public bool IsAdmin { get; set; }

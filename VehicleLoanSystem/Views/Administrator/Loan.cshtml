@@ -28,15 +28,15 @@
             </th>
            
             <th>
-                @Html.DisplayNameFor(model => model.loanPurpose)
+                @Html.DisplayNameFor(model => model.LoanPurpose)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.loanAmount)
+                @Html.DisplayNameFor(model => model.LoanAmount)
             </th>
             <th>       Loan Status
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.loanDate)
+                @Html.DisplayNameFor(model => model.LoanDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.TotalPayableAmount)
@@ -73,15 +73,15 @@
 
                 <td>
                     @Html.DisplayFor(modelItem => item.Salary)
-                    ETB
+                    INR
                 </td>
 
                 <td>
-                    @Html.DisplayFor(modelItem => item.loanPurpose)
+                    @Html.DisplayFor(modelItem => item.LoanPurpose)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.loanAmount)
-                    ETB
+                    @Html.DisplayFor(modelItem => item.LoanAmount)
+                    INR
                 </td>
                 <td>
                     @if (item.LoanGrant == "REJECTED")
@@ -98,17 +98,17 @@
                     }
                 </td>
                 <td>
-                    @item.loanDate.ToString("MMMM dddd dd")
+                    @item.LoanDate.ToString("MMMM dddd dd")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TotalPayableAmount)
-                    ETB
+                    INR
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MonthlyPayableAmount) ETB
+                    @Html.DisplayFor(modelItem => item.MonthlyPayableAmount) INR
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MonthlyPenalty) ETB
+                    @Html.DisplayFor(modelItem => item.MonthlyPenalty) INR
                 </td>
 
                 <td>

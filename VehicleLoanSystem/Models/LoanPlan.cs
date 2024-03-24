@@ -16,9 +16,9 @@ namespace VehicleLoanSystem.Models
         public int Month { get; set; }
         [Required]
         [DisplayName("Loan Interest")]
-        public decimal Interest { get; set; }
+        public double Interest { get; set; }
         [Required]
         [DisplayName("Monthly Over Due Penalty")]
-        public decimal MonthlyOverDuePenalty { get; set; }
+        public double MonthlyOverDuePenalty { get; set; }
     }
 }

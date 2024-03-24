@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using VehicleLoanSystem.Models;
+using VehicleLoanSystem.Data;
 
 #nullable disable
 
 namespace VehicleLoanSystem.Migrations
 {
-    [DbContext(typeof(LoanManagementContext))]
-    partial class LoanManagementContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(VehicleLoanSystemContext))]
+    [Migration("20240324093945_initialcreate")]
+    partial class initialcreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,64 +41,58 @@ namespace VehicleLoanSystem.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<double>("LoanAmount")
+                        .HasColumnType("double");
+
+                    b.Property<DateTime>("LoanDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("LoanGrant")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("LoanPlanId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoanPurpose")
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("MiddleName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
+                    b.Property<int>("LoanTypeId")
+                        .HasColumnType("int");
 
-                    b.Property<decimal>("MonthlyPayableAmount")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("MonthlyPayableAmount")
+                        .HasColumnType("double");
 
-                    b.Property<decimal>("MonthlyPenalty")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("MonthlyPenalty")
+                        .HasColumnType("double");
 
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("RejectionReason")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<decimal>("Salary")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("Salary")
+                        .HasColumnType("double");
 
-                    b.Property<string>("Sex")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("TotalPayableAmount")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("TotalPayableAmount")
+                        .HasColumnType("double");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("loanAmount")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<DateTime>("loanDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("loanPlanId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("loanPurpose")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("loanTypeId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Loan");
+                    b.ToTable("Loans");
                 });
 
             modelBuilder.Entity("VehicleLoanSystem.Models.LoanPlan", b =>
@@ -106,14 +103,14 @@ namespace VehicleLoanSystem.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("Interest")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("Interest")
+                        .HasColumnType("double");
 
                     b.Property<int>("Month")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MonthlyOverDuePenalty")
-                        .HasColumnType("decimal(65,30)");
+                    b.Property<double>("MonthlyOverDuePenalty")
+                        .HasColumnType("double");
 
                     b.HasKey("Id");
 
@@ -153,7 +150,6 @@ namespace VehicleLoanSystem.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("LoanStatus")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("NextPaymentDate")

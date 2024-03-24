@@ -32,7 +32,7 @@ namespace VehicleLoanSystem.Models
         [DisplayName("Next Payment Date")]
         public DateTime NextPaymentDate { get; set; }
         [DisplayName("Loan Status")]
-        public string LoanStatus { get; set; }
+        public string? LoanStatus { get; set; }
         [DisplayName("Loan Covered")]
         public bool LoanCovered { get; set; }
         [DisplayName("User Id")]

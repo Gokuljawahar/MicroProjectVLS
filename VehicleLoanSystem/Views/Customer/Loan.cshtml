@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Loan";
     ViewBag.LoanActive = "active";
-
 }
 
 <h1>Request Loan</h1>
@@ -11,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Loan">
+        <form asp-action="RequestLoan">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="FirstName" class="control-label"></label>
@@ -23,14 +22,14 @@
                 <input asp-for="LastName" class="form-control" />
                 <span asp-validation-for="LastName" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            @* <div class="form-group">
                 <label asp-for="MiddleName" class="control-label"></label>
                 <input asp-for="MiddleName" class="form-control" />
                 <span asp-validation-for="MiddleName" class="text-danger"></span>
-            </div>
+            </div> *@
                 <div class="form-group">
-                    <label asp-for="Sex" class="control-label"></label>
-                    <select class="form-control" id="Sex" asp-for="Sex">
+                    <label asp-for="Gender" class="control-label"></label>
+                    <select class="form-control" id="Gender" asp-for="Gender">
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
 
@@ -48,9 +47,10 @@
                 <span asp-validation-for="Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="loanPlanId" class="control-label"></label>
-                <select class="form-control" id="loanPlanId" asp-for="loanPlanId">
-                    @if (ViewData["plan"].ToString().Length != 0)
+                <label asp-for="LoanPlanId" class="control-label"></label>
+                <select class="form-control" id="LoanPlanId" asp-for="LoanPlanId">
+                  @if (ViewData["plan"] != null && ViewData["plan"].ToString().Length != 0)
+
                     {
 
                         foreach (LoanPlan item in @ViewData["plan"] as List<LoanPlan>)
@@ -76,42 +76,34 @@
                 <input asp-for="Salary" class="form-control" />
                 <span asp-validation-for="Salary" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="loanTypeId" class="control-label"></label>
-                <select class="form-control" id="loanTypeId" asp-for="loanTypeId">
-                    @if (ViewData["type"] != "")
-                    {
+           <div class="form-group">
+    <label asp-for="LoanTypeId" class="control-label"></label>
+    <select class="form-control" id="LoanTypeId" asp-for="LoanTypeId">
+        @if (ViewData["type"] != null && ViewData["type"] is List<LoanType> loanTypes && loanTypes.Any())
+        {
+            foreach (LoanType item in loanTypes)
+            {
+                <option value="@item.Id">@item.LoanTypeName</option>
+            }
+        }
+        else
+        {
+            <option value="">Empty</option>
+        }
+    </select>
+</div>
 
-                        foreach (LoanType item in @ViewData["type"] as List<LoanType>)
-                        {
-
-                            <option value="@item.Id">@item.LoanTypeName</option>
-
-                        }
-
-                    }
-                    else
-                    {
-                        <option value="">Empty</option>
-                    }
-                </select>
-            </div>
 
             <div class="form-group">
-                <label asp-for="loanPurpose" class="control-label"></label>
-                <input asp-for="loanPurpose" class="form-control" />
-                <span asp-validation-for="loanPurpose" class="text-danger"></span>
+                <label asp-for="LoanPurpose" class="control-label"></label>
+                <input asp-for="LoanPurpose" class="form-control" />
+                <span asp-validation-for="LoanPurpose" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="loanAmount" class="control-label"></label>
-                <input asp-for="loanAmount" class="form-control" />
-                <span asp-validation-for="loanAmount" class="text-danger"></span>
+                <label asp-for="LoanAmount" class="control-label"></label>
+                <input asp-for="LoanAmount" class="form-control" />
+                <span asp-validation-for="LoanAmount" class="text-danger"></span>
             </div>
-
-
-
-
-
             <div class="form-group">
                 <input type="submit" value="Request Loan" class="btn btn-primary" />
                 <a asp-action="ViewLoan" class="btn btn-danger">Cancel</a>

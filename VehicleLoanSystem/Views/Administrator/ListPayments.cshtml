@@ -57,13 +57,13 @@
                     @item.PayedMonth.ToString("MMMM")
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PayedAmount) ETB
+                    @Html.DisplayFor(modelItem => item.PayedAmount) INR
                 </td>
                 <td>
                     @if(item.RemainingLoanAmount <= 0){
                         <span class="text-success">Fully Covered</span>
                     }else{
-                        <span class=""> @Math.Round(item.RemainingLoanAmount,2) ETB</span>
+                        <span class=""> @Math.Round(item.RemainingLoanAmount,2) INR</span>
                     }
                 </td>
                 <td>
@@ -74,7 +74,7 @@
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.PenaltyPaymentAmount) ETB
+                    @Html.DisplayFor(modelItem => item.PenaltyPaymentAmount) INR
 
                 </td>
                <td>

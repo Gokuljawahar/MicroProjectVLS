@@ -13,10 +13,10 @@ namespace VehicleLoanSystem.Models
         public int Id { get; set; }
         [Required]
         [DisplayName("Loan Type")]
-        public string LoanTypeName { get; set; }
+        public string? LoanTypeName { get; set; }
         [Required]
         [DisplayName("Loan Descritption")]
-        public string LoanDescription { get; set; }
+        public string? LoanDescription { get; set; }
        
     }
 }

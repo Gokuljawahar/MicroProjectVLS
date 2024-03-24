@@ -1,26 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Mvc;
 using VehicleLoanSystem.Helpers;
 using VehicleLoanSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using Scrypt;
+using VehicleLoanSystem.Data;
 
 namespace VehicleLoanSystem.Controllers.administrator
 {
     public class AdministratorController : Controller
     {
-        private readonly LoanManagementContext _context;
+        private readonly VehicleLoanSystemContext _context;
 
-        public AdministratorController(LoanManagementContext context)
+        public AdministratorController(VehicleLoanSystemContext context)
         {
             _context = context;
         }
-       
+
 
 
         public IActionResult Index()
@@ -30,15 +25,15 @@ namespace VehicleLoanSystem.Controllers.administrator
                 return RedirectToAction(actionName: "Login", controllerName: "Login");
             }
 
-            //today loan requests
-            TempData["todaysLoanRequest"] = _context.Loan.Where(e => e.loanDate.Day == DateTime.Now.Day && e.loanDate.Year == DateTime.Now.Year).Where(e => e.LoanGrant == "PENDING").Count();
+            //today Loan requests
+            TempData["todaysLoanRequest"] = _context.Loans.Where(e => e.LoanDate.Day == DateTime.Now.Day && e.LoanDate.Year == DateTime.Now.Year).Where(e => e.LoanGrant == "PENDING").Count();
 
-            //Monthly active Loans
+            //Monthly active Loan
             TempData["CoveredLoan"] = _context.Payments.Where(e => e.PayedDate.Month == DateTime.Now.Month).Where(e => e.LoanCovered == true).Count();
-            //Monthly Closed Loans
+            //Monthly Closed Loan
             TempData["registedUsers"] = _context.Accounts.Where(e => e.IsAdmin == false).Count();
 
-            //active loans
+            //active Loan
             TempData["activeLoans"] = _context.Payments.Where(e => e.PayedDate.Year == DateTime.Now.Year && e.LoanCovered == false).Count();
 
             return View();
@@ -50,7 +45,7 @@ namespace VehicleLoanSystem.Controllers.administrator
             {
                 return RedirectToAction(actionName: "Login", controllerName: "Login");
             }
-            return View(await _context.Loan.ToListAsync());
+            return View(await _context.Loans.ToListAsync());
         }
 
         public async Task<IActionResult> DetailLoan(int? id)
@@ -64,13 +59,13 @@ namespace VehicleLoanSystem.Controllers.administrator
                 return NotFound();
             }
 
-            var loan = await _context.Loan.FirstOrDefaultAsync(m => m.Id == id);
-            if (loan == null)
+            var Loan = await _context.Loans.FirstOrDefaultAsync(m => m.Id == id);
+            if (Loan == null)
             {
                 return NotFound();
             }
 
-            return View(loan);
+            return View(Loan);
         }
 
         public async Task<IActionResult> AcceptLoan(int? id)
@@ -80,15 +75,15 @@ namespace VehicleLoanSystem.Controllers.administrator
                 return NotFound();
             }
 
-            var loan = await _context.Loan.FirstOrDefaultAsync(m => m.Id == id);
-            if (loan == null)
+            var Loan = await _context.Loans.FirstOrDefaultAsync(m => m.Id == id);
+            if (Loan == null)
             {
                 return NotFound();
             }
 
-            loan.LoanGrant = "ACCEPTED";
-            loan.RejectionReason = "NONE";
-            _context.Update(loan);
+            Loan.LoanGrant = "ACCEPTED";
+            Loan.RejectionReason = "NONE";
+            _context.Update(Loan);
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Loan));
@@ -97,22 +92,22 @@ namespace VehicleLoanSystem.Controllers.administrator
         public async Task<IActionResult> RejectLoan(int? id)
         {
             ViewBag.LoanActive = "active";
-            var loan = await _context.Loan.FirstOrDefaultAsync(m => m.Id == id);
-            return View(loan);
+            var Loan = await _context.Loans.FirstOrDefaultAsync(m => m.Id == id);
+            return View(Loan);
         }
 
         [HttpPost]
-        public async Task<IActionResult> RejectLoan(Loan loan)
+        public async Task<IActionResult> RejectLoan(Loan Loan)
         {
-           
-            var loanUpdated = await _context.Loan.FirstOrDefaultAsync(m => m.Id == loan.Id);
-            if (loan == null)
+
+            var loanUpdated = await _context.Loans.FirstOrDefaultAsync(m => m.Id == Loan.Id);
+            if (Loan == null)
             {
                 return NotFound();
             }
 
             loanUpdated.LoanGrant = "REJECTED";
-            loanUpdated.RejectionReason = loan.RejectionReason;
+            loanUpdated.RejectionReason = Loan.RejectionReason;
             _context.Update(loanUpdated);
             await _context.SaveChangesAsync();
 
@@ -139,65 +134,110 @@ namespace VehicleLoanSystem.Controllers.administrator
             return View(await _context.Accounts.ToListAsync());
         }
 
-        public async Task<IActionResult> MakePayment(int id,Payment payment)
+        // public async Task<IActionResult> MakePayment(int id, Payment payment)
+        // {
+        //     ViewBag.AdminPaymentActive = "active";
+
+        //     if (!_context.Loans.Any(e => e.UserId == id))
+        //     {
+        //         TempData["AlertType"] = "danger";
+        //         TempData["AlertMessage"] = "No Loan Has be Requested by this Customer yet";
+        //         return RedirectToAction(nameof(PayeeCustomers));
+        //     }
+
+        //     if (_context.Payments.Any(e => e.UserId == id))
+        //     {
+        //         //had previous payment
+        //         payment.PayedDate = DateTime.Now;
+        //         payment.PayedMonth = DateTime.Now;
+        //         payment.PayedAmount = 0;
+        //         var UserPayment = _context.Payments.OrderBy(e => e.Id).LastOrDefault(e => e.UserId == id);
+        //         payment.RemainingLoanAmount = UserPayment.RemainingLoanAmount;
+        //         payment.RemainingMonthPayment = UserPayment.RemainingMonthPayment;
+        //         payment.PenaltyPaymentAmount = UserPayment.PenaltyPaymentAmount;
+
+        //         payment.NextPaymentDate = UserPayment.NextPaymentDate;
+        //         payment.LoanStatus = UserPayment.LoanStatus;
+        //         payment.LoanCovered = UserPayment.LoanCovered;
+        //         payment.UserId = id;
+        //     }
+        //     else
+        //     {
+        //         //first payment
+        //         payment.PayedDate = DateTime.Now;
+        //         payment.PayedMonth = DateTime.Now;
+        //         payment.PayedAmount = 0;
+        //         var UserLoan = _context.Loans.FirstOrDefault(e => e.UserId == id && e.LoanGrant == "ACCEPTED");
+        //         payment.RemainingLoanAmount = UserLoan.TotalPayableAmount;
+        //         payment.RemainingMonthPayment = UserLoan.MonthlyPayableAmount;
+        //         payment.PenaltyPaymentAmount = UserLoan.MonthlyPenalty;
+        //         var current = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
+        //         var next = current.AddMonths(1);
+        //         payment.NextPaymentDate = next;
+        //         payment.LoanStatus = "ACTIVE";
+        //         payment.LoanCovered = false;
+        //         payment.UserId = id;
+        //     }
+
+        //     return View(payment);
+        // }
+
+        public async Task<IActionResult> MakePayment(int id)
         {
             ViewBag.AdminPaymentActive = "active";
 
-            if (!_context.Loan.Any(e => e.UserId == id))
+            // Check if there are any loans associated with the user ID
+            var userLoan = _context.Loans.FirstOrDefault(e => e.UserId == id && e.LoanGrant == "ACCEPTED");
+            if (userLoan == null)
             {
                 TempData["AlertType"] = "danger";
-                TempData["AlertMessage"] = "No Loan Has be Requested by this Customer yet";
+                TempData["AlertMessage"] = "No loan has been requested by this customer yet";
                 return RedirectToAction(nameof(PayeeCustomers));
             }
 
-            if (_context.Payments.Any(e => e.UserId == id)) {
-                //had previous payment
-                payment.PayedDate = DateTime.Now;
-                payment.PayedMonth = DateTime.Now;
-                payment.PayedAmount = 0;
-                var UserPayment = _context.Payments.OrderBy(e=>e.Id).LastOrDefault(e => e.UserId == id);
-                payment.RemainingLoanAmount = UserPayment.RemainingLoanAmount;
-                payment.RemainingMonthPayment = UserPayment.RemainingMonthPayment;
-                payment.PenaltyPaymentAmount = UserPayment.PenaltyPaymentAmount;
-
-                payment.NextPaymentDate = UserPayment.NextPaymentDate;
-                payment.LoanStatus = UserPayment.LoanStatus;
-                payment.LoanCovered = UserPayment.LoanCovered;
-                payment.UserId = id;
-            }
-            else
+            // Initialize a new Payment object
+            var payment = new Payment
             {
-                //first payment
-                payment.PayedDate = DateTime.Now;
-                payment.PayedMonth = DateTime.Now;
-                payment.PayedAmount = 0;
-                var UserLoan = _context.Loan.FirstOrDefault(e => e.UserId == id && e.LoanGrant == "ACCEPTED");
-                payment.RemainingLoanAmount = Convert.ToDouble(UserLoan.TotalPayableAmount);
-                payment.RemainingMonthPayment = Convert.ToDouble(UserLoan.MonthlyPayableAmount);
-                payment.PenaltyPaymentAmount = Convert.ToDouble(UserLoan.MonthlyPenalty);
-                var current = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-                var next = current.AddMonths(1);
-                payment.NextPaymentDate = next;
-                payment.LoanStatus = "ACTIVE";
-                payment.LoanCovered = false;
-                payment.UserId = id;
+                PayedDate = DateTime.Now,
+                PayedMonth = DateTime.Now,
+                PayedAmount = 0,
+                RemainingLoanAmount = userLoan.TotalPayableAmount,
+                RemainingMonthPayment = userLoan.MonthlyPayableAmount,
+                PenaltyPaymentAmount = userLoan.MonthlyPenalty,
+                NextPaymentDate = DateTime.Today.AddMonths(1),
+                LoanStatus = "ACTIVE",
+                LoanCovered = false,
+                UserId = id
+            };
+
+            // Check if the user has made any previous payments
+            var lastPayment = _context.Payments.OrderBy(e => e.Id).LastOrDefault(e => e.UserId == id);
+            if (lastPayment != null)
+            {
+                payment.RemainingLoanAmount = lastPayment.RemainingLoanAmount;
+                payment.RemainingMonthPayment = lastPayment.RemainingMonthPayment;
+                payment.PenaltyPaymentAmount = lastPayment.PenaltyPaymentAmount;
+                payment.NextPaymentDate = lastPayment.NextPaymentDate;
+                payment.LoanStatus = lastPayment.LoanStatus;
+                payment.LoanCovered = lastPayment.LoanCovered;
             }
 
             return View(payment);
         }
 
+
         [HttpPost]
         public async Task<IActionResult> MakeFinalPayment(int id, Payment payment)
         {
-        
+
             payment.RemainingLoanAmount = payment.RemainingLoanAmount - payment.PayedAmount;
             payment.RemainingMonthPayment = payment.RemainingMonthPayment - payment.PayedAmount;
 
             //check for penalty
-            if (DateTime.Now > payment.NextPaymentDate )
+            if (DateTime.Now > payment.NextPaymentDate)
             {
-                int loanPlanId = _context.Loan.FirstOrDefault(e => e.UserId == payment.UserId).loanPlanId;
-                decimal penaltyValue = _context.LoanPlans.FirstOrDefault(e => e.Id == loanPlanId).MonthlyOverDuePenalty;
+                int loanPlanId = _context.Loans.FirstOrDefault(e => e.UserId == payment.UserId).LoanPlanId;
+                double penaltyValue = _context.LoanPlans.FirstOrDefault(e => e.Id == loanPlanId).MonthlyOverDuePenalty;
                 payment.PenaltyPaymentAmount = Convert.ToDouble(penaltyValue);
             }
             else
@@ -205,7 +245,7 @@ namespace VehicleLoanSystem.Controllers.administrator
                 payment.PenaltyPaymentAmount = 0;
 
             }
-            //check if loan is covered
+            //check if Loan is covered
             if (payment.RemainingLoanAmount <= 0)
             {
                 payment.LoanStatus = "DEACTIVE";
@@ -247,22 +287,13 @@ namespace VehicleLoanSystem.Controllers.administrator
             {
                 return RedirectToAction(actionName: "Login", controllerName: "Login");
             }
-            var payment = await _context.Payments.OrderByDescending(e=>e.Id).ToListAsync();
+            var payment = await _context.Payments.OrderByDescending(e => e.Id).ToListAsync();
             if (payment == null)
             {
                 return NotFound();
             }
             return View(payment);
         }
-
-
-
-
-
-
-
-
-
 
         public IActionResult LoanPlan()
         {
@@ -307,7 +338,7 @@ namespace VehicleLoanSystem.Controllers.administrator
             return View(loanPlan);
         }
 
-   
+
         // POST: LoanPlan/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -460,7 +491,7 @@ namespace VehicleLoanSystem.Controllers.administrator
             return View(loanType);
         }
 
-       
+
         // POST: LoanType/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -592,7 +623,7 @@ namespace VehicleLoanSystem.Controllers.administrator
 
 
 
-       
+
         // GET: Users
         public async Task<IActionResult> Users()
         {
@@ -756,38 +787,38 @@ namespace VehicleLoanSystem.Controllers.administrator
                 return RedirectToAction(actionName: "Login", controllerName: "Login");
             }
 
-            //Monthly Loans
+            //Monthly Loan
 
-            TempData["MonthlyGivenOut"] = _context.Loan.Where(e => e.loanDate.Month == DateTime.Now.Month && e.loanDate.Year == DateTime.Now.Year).Select(t => t.loanAmount).Sum();
-            //Monthly active Loans
-            TempData["MonthlyAciveLoan"] = _context.Loan.Where(e => e.loanDate.Month == DateTime.Now.Month && e.loanDate.Year == DateTime.Now.Year).Where(e=>e.LoanGrant == "ACCEPTED").Count();
-            //Monthly Closed Loans
+            TempData["MonthlyGivenOut"] = _context.Loans.Where(e => e.LoanDate.Month == DateTime.Now.Month && e.LoanDate.Year == DateTime.Now.Year).Select(t => t.LoanAmount).Sum();
+            //Monthly active Loan
+            TempData["MonthlyAciveLoan"] = _context.Loans.Where(e => e.LoanDate.Month == DateTime.Now.Month && e.LoanDate.Year == DateTime.Now.Year).Where(e => e.LoanGrant == "ACCEPTED").Count();
+            //Monthly Closed Loan
             TempData["MonthlyClosedLoan"] = _context.Payments.Where(e => e.PayedDate.Month == DateTime.Now.Month).Where(e => e.LoanCovered == true).Count();
             //Monthly profit
-            TempData["MonthlyProfit"] = _context.Loan.Where(e => e.loanDate.Month == DateTime.Now.Month && e.loanDate.Year == DateTime.Now.Year).Select(e => e.TotalPayableAmount).Sum() - _context.Loan.Where(e => e.loanDate.Month == DateTime.Now.Month && e.loanDate.Year == DateTime.Now.Year).Select(e => e.loanAmount).Sum();
+            TempData["MonthlyProfit"] = _context.Loans.Where(e => e.LoanDate.Month == DateTime.Now.Month && e.LoanDate.Year == DateTime.Now.Year).Select(e => e.TotalPayableAmount).Sum() - _context.Loans.Where(e => e.LoanDate.Month == DateTime.Now.Month && e.LoanDate.Year == DateTime.Now.Year).Select(e => e.LoanAmount).Sum();
             //Monthly Range
             //Monthly Active Users
-            TempData["MonthlyActiveUsers"] = _context.Accounts.Where(e=>e.IsAdmin == false).Count();
-             //Monthly Expected Payments
-             TempData["MonthlyExpectedPayment"] = _context.Loan.Where(e => e.loanDate.Month == DateTime.Now.Month && e.loanDate.Year == DateTime.Now.Year).Where(e => e.LoanGrant == "ACCEPTED").Select(e=>e.MonthlyPayableAmount).Sum();
-            //Monthly Payed Loans
+            TempData["MonthlyActiveUsers"] = _context.Accounts.Where(e => e.IsAdmin == false).Count();
+            //Monthly Expected Payments
+            TempData["MonthlyExpectedPayment"] = _context.Loans.Where(e => e.LoanDate.Month == DateTime.Now.Month && e.LoanDate.Year == DateTime.Now.Year).Where(e => e.LoanGrant == "ACCEPTED").Select(e => e.MonthlyPayableAmount).Sum();
+            //Monthly Payed Loan
             TempData["MonthlyPayedAmount"] = _context.Payments.Where(e => e.PayedDate.Month == DateTime.Now.Month && e.PayedDate.Year == DateTime.Now.Year).Select(e => e.PayedAmount).Sum();
             //Monthly Payed Penaltys
             TempData["MonthlyPayedPenalty"] = _context.Payments.Where(e => e.PayedDate.Month == DateTime.Now.Month && e.PayedDate.Year == DateTime.Now.Year).Select(e => e.PenaltyPaymentAmount).Sum();
             //yearly
-            //Yearly Given out loans
-            TempData["YearlyGivenOut"] = _context.Loan.Where(e=>e.loanDate.Year == DateTime.Now.Year).Select(t => t.loanAmount).Sum();
-            //Yearly active Loans
-            TempData["YearlyActiveLoan"] = _context.Loan.Where(e => e.LoanGrant == "ACCEPTED" && e.loanDate.Year == DateTime.Now.Year).Count();
-            //Yearly Closed Loans
+            //Yearly Given out Loan
+            TempData["YearlyGivenOut"] = _context.Loans.Where(e => e.LoanDate.Year == DateTime.Now.Year).Select(t => t.LoanAmount).Sum();
+            //Yearly active Loan
+            TempData["YearlyActiveLoan"] = _context.Loans.Where(e => e.LoanGrant == "ACCEPTED" && e.LoanDate.Year == DateTime.Now.Year).Count();
+            //Yearly Closed Loan
             TempData["YearlyClosedLoan"] = _context.Payments.Where(e => e.LoanCovered == true && e.PayedDate.Year == DateTime.Now.Year).Count();
             //Yearly profit
-            TempData["YearlyProfit"] = _context.Loan.Where(e => e.loanDate.Year == DateTime.Now.Year).Select(e => e.TotalPayableAmount).Sum() - _context.Loan.Where(e => e.loanDate.Year == DateTime.Now.Year).Select(e => e.loanAmount).Sum();
+            TempData["YearlyProfit"] = _context.Loans.Where(e => e.LoanDate.Year == DateTime.Now.Year).Select(e => e.TotalPayableAmount).Sum() - _context.Loans.Where(e => e.LoanDate.Year == DateTime.Now.Year).Select(e => e.LoanAmount).Sum();
             //Yearly Range
             //Yearly Active Users
             TempData["YearlyUsers"] = _context.Accounts.Where(e => e.IsAdmin == false).Count();
             //Yearly Expected Payments
-            TempData["YearlyPayment"] = _context.Payments.Where(e=>e.PayedDate.Year == DateTime.Now.Year).Select(e => e.PayedAmount).Sum();
+            TempData["YearlyPayment"] = _context.Payments.Where(e => e.PayedDate.Year == DateTime.Now.Year).Select(e => e.PayedAmount).Sum();
 
 
             return View(await _context.Accounts.ToListAsync());

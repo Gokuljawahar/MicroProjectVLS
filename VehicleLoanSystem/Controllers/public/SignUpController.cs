@@ -9,13 +9,16 @@ using VehicleLoanSystem.Models;
 using Scrypt;
 using Microsoft.AspNetCore.Http;
 using VehicleLoanSystem.Helpers;
+using VehicleLoanSystem.Data;
+
+
 namespace VehicleLoanSystem.Controllers
 {
     public class SignUpController : Controller
     {
-        private readonly LoanManagementContext _context;
+        private readonly VehicleLoanSystemContext  _context;
 
-        public SignUpController(LoanManagementContext context)
+        public SignUpController(VehicleLoanSystemContext  context)
         {
             _context = context;
 
